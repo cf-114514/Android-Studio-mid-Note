@@ -27,24 +27,48 @@ JDK：Amazon Corretto 17
 
 安装和配置
 克隆项目
-在本地克隆项目仓库：
-
+https://github.com/llfjfz/NotePad
 打开 Android Studio
 在 Android Studio 中打开项目目录。
 
 同步 Gradle
 点击 Sync Now 以同步 Gradle 配置。
+其中
+JDK版本为17
+Gradle的版本为8.9.0
+AGP的版本为8.7.2
+![image](https://github.com/user-attachments/assets/b51b4b26-0a9e-40b0-90e3-228840bf382c)
+
 
 # 运行应用
 连接 Android 设备或启动模拟器，点击运行按钮即可。
 
 # 项目结构
-MainActivity.java：应用的主界面，展示所有笔记。
-NoteAdapter.java：RecyclerView 适配器，用于展示笔记列表。
-NoteDatabase.java：Room 数据库配置，用于存储笔记。
-Note.java：笔记数据实体类，包含笔记信息（标题、内容、创建时间、修改时间等）。
-NoteDetailActivity.java：笔记详细信息页面，支持编辑和查看笔记。
-FileOutput.java：处理笔记内容导出的功能（尚未完全实现）。
+
+主要的类:
+NotesList类 应用程序的入口，笔记本的首页面会显示笔记的列表
+NoteEditor类 编辑笔记内容的Activity
+TitleEditor类 编辑笔记标题的Activity
+NotePadProvider类 这是笔记本应用的ContentProvider
+NoteColor类 用来选择颜色
+NoteSearch类 用于实现笔记查询
+MyCursorAdapter类 继承SimpleCursorAdapter
+
+主要的布局文件：
+note_editor.xml 笔记主页面布局
+noteslist_item.xml 笔记主页面每个列表项布局
+title_editor.xml 修改笔记主题布局
+note_search.xml 笔记内容查询布局
+note_color.xml 对选择颜色界面进行布局
+
+主要的菜单文件：
+editor_options_menu.xml 编辑笔记内容的菜单布局
+list_context_menu.xml 笔记内容编辑上下文菜单布局
+list_options_menu.xml 笔记主页面可选菜单布局
+
+![image](https://github.com/user-attachments/assets/03854139-f657-400f-8057-a32ba90b6074)
+![image](https://github.com/user-attachments/assets/b3e7c813-b4b7-4f4a-a735-0d80fbf9d58a)
+
 # 扩展功能说明
 时间戳：每条笔记自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间。
 搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
