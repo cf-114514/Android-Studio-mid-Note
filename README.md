@@ -25,28 +25,18 @@ JDK：Amazon Corretto 17
 
 依赖库：RecyclerView、Room Database、Glide（图片处理）、File API（导出功能）
 
-安装和配置
-克隆项目
-https://github.com/llfjfz/NotePad
-打开 Android Studio
-在 Android Studio 中打开项目目录。
-
-同步 Gradle
-点击 Sync Now 以同步 Gradle 配置。
-
-其中
-
-JDK版本为17
-
-Gradle的版本为8.9.0
-
-AGP的版本为8.7.2
-
-API版本为35.0
+其中：JDK版本为17  Gradle的版本为8.9.0  AGP的版本为8.7.2  API版本为35.0
 
 ![image](https://github.com/user-attachments/assets/b51b4b26-0a9e-40b0-90e3-228840bf382c)
 ![image](https://github.com/user-attachments/assets/de4a1225-3727-47ee-a8e6-326788ffb20b)
 
+# 安装和配置
+克隆项目
+https://github.com/llfjfz/NotePad
+打开 Android Studio
+在 Android Studio 中打开项目目录。
+同步 Gradle 
+点击 Sync Now 以同步 Gradle 配置。
 
 # 运行应用
 连接 Android 设备或启动模拟器，点击运行按钮即可。
