@@ -1,115 +1,108 @@
-# Android-Studio-mid-Note
-Android Studio 期中NotePad作业
 
-# 项目简介
-这是一个基于 Android Studio 开发的 NotePad 应用，作为期中作业，项目在原有基础上进行了功能扩展，旨在提供更丰富的笔记管理体验。支持时间戳、搜索、UI 美化、响应变色、笔记排序、背景颜色修改以及文件输出等功能。
+NotePad 扩展项目
+项目简介
+该项目是一个基于 Android 开发的简易记事本应用，具有创建、编辑、删除笔记等基本功能，并加入了多项扩展功能。扩展功能包括时间戳、搜索、UI 美化、响应变色、背景颜色选择、笔记排序以及输出文件功能等，旨在提升用户体验和笔记管理效率。
 
-# 功能特性
-时间戳：每个笔记自动生成创建时间和修改时间。
-搜索功能：用户可以通过关键词搜索笔记。
-UI 美化：应用的基础颜色为 HoloLight，界面设计简洁且美观。
-响应变色：点击笔记时，背景颜色会发生变化，增强交互反馈。
-背景颜色选择：每条笔记可以自定义背景颜色。
-笔记排序：可以根据创建时间、修改时间或颜色对笔记进行排序。
-# 技术栈
-开发语言：Java 17
-
+功能特性
+时间戳：每个笔记都有自动生成的创建时间和修改时间，用户可以查看笔记的历史信息。
+搜索功能：用户可以快速通过关键字搜索笔记。
+UI 美化：应用采用 HoloLight 主题，界面简洁美观。
+响应变色：点击任意笔记时，笔记的背景颜色会发生变化，增强交互感。
+输出功能：用户可以将笔记内容输出至系统文件（功能尚未完全实现）。
+背景颜色选择：每条笔记都支持选择自定义的背景颜色。
+笔记排序：支持按创建时间、修改时间和颜色排序笔记，帮助用户快速管理和查找笔记。
+技术栈
+开发语言：Java 11
 IDE：Android Studio
-
 构建工具：Gradle
-
-JDK：Amazon Corretto 17
-
+JDK：Amazon Corretto 11
 数据库：SQLite（存储笔记数据）
-
-依赖库：RecyclerView、Room Database、Glide（图片处理）、File API（导出功能）
-
-其中：JDK版本为17  Gradle的版本为8.9.0  AGP的版本为8.7.2  API版本为35.0
-
-![image](https://github.com/user-attachments/assets/b51b4b26-0a9e-40b0-90e3-228840bf382c)
-![image](https://github.com/user-attachments/assets/de4a1225-3727-47ee-a8e6-326788ffb20b)
-
-# 安装和配置
+依赖库：RecyclerView、Room Database、Glide（用于图片处理）、File API（用于导出功能）
+安装和配置
 克隆项目
-https://github.com/llfjfz/NotePad
+
+在本地克隆项目仓库：
+
+bash
+复制代码
+git clone https://github.com/yourusername/notepad-extension.git
 打开 Android Studio
+
 在 Android Studio 中打开项目目录。
-同步 Gradle 
+
+同步 Gradle
+
 点击 Sync Now 以同步 Gradle 配置。
 
-# 运行应用
+运行应用
+
 连接 Android 设备或启动模拟器，点击运行按钮即可。
 
-# 项目结构
+项目结构
+MainActivity.java：应用主界面，展示所有笔记。
+NoteAdapter.java：RecyclerView 的适配器，用于展示笔记列表。
+NoteDatabase.java：Room 数据库配置，用于持久化笔记数据。
+Note.java：笔记数据实体类，包含笔记的基本信息（标题、内容、创建时间、修改时间、背景颜色等）。
+NoteDetailActivity.java：笔记详细信息页面，支持创建和编辑笔记。
+FileOutput.java：处理笔记导出功能（尚未完成）。
+扩展功能说明
+1. 时间戳
+每条笔记会自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间戳。
 
-主要的类:
-NotesList类 应用程序的入口，笔记本的首页面会显示笔记的列表
+2. 搜索功能
+应用提供了快速搜索功能，用户可以根据笔记标题或内容进行搜索，便于快速找到相关笔记。
 
-NoteEditor类 编辑笔记内容的Activity
+3. UI 美化
+应用的基础颜色为 HoloLight，通过现代化的设计和简洁的 UI 使用户体验更为舒适。
 
-TitleEditor类 编辑笔记标题的Activity
+4. 响应变色
+用户点击某个笔记时，笔记的背景颜色会发生变化，增强视觉反馈和互动感。
 
-NotePadProvider类 这是笔记本应用的ContentProvider
+5. 输出功能
+该功能允许用户将笔记内容输出为系统文件（此功能尚未完全实现，但已部分支持将内容写入文件）。目前只支持简单的文本输出，后续将完善。
 
-NoteColor类 用来选择颜色
+6. 修改背景颜色
+用户可以在每个笔记中选择不同的背景颜色，从而根据个人喜好定制笔记的外观。
 
-NoteSearch类 用于实现笔记查询
+7. 笔记排序
+用户可以根据以下方式对笔记进行排序：
 
-MyCursorAdapter类 继承SimpleCursorAdapter
-
-主要的布局文件：
-
-note_editor.xml 笔记主页面布局
-
-noteslist_item.xml 笔记主页面每个列表项布局
-
-title_editor.xml 修改笔记主题布局
-
-note_search.xml 笔记内容查询布局
-
-note_color.xml 对选择颜色界面进行布局
-
-主要的菜单文件：
-
-editor_options_menu.xml 编辑笔记内容的菜单布局
-
-list_context_menu.xml 笔记内容编辑上下文菜单布局
-
-list_options_menu.xml 笔记主页面可选菜单布局
-
-![image](https://github.com/user-attachments/assets/08951e1d-d7bc-49ec-b3c5-ca74afcbe7f1)
-
-![image](https://github.com/user-attachments/assets/2cdc02cb-d43e-42d3-b323-b57128660e7c)
+按创建时间排序。
+按最后修改时间排序。
+按背景颜色排序。
+页面截图
+主界面
+显示所有笔记，并且可以点击任意笔记进行查看、编辑、删除操作。
 
 
-![image](https://github.com/user-attachments/assets/b3e7c813-b4b7-4f4a-a735-0d80fbf9d58a)
+截图提示：这里展示所有笔记的列表，可以展示 UI 美化效果和响应变色功能。
 
-# 基础功能
-时间戳：每条笔记自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间。
-![image](https://github.com/user-attachments/assets/ca6c46f4-014b-4aa1-80ad-ebdd2e225537)
-
-搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
-![image](https://github.com/user-attachments/assets/a7b81761-413b-49b1-b189-68a017ad6cd6)
-
-# 扩展功能
-UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友好。
-![image](https://github.com/user-attachments/assets/c324a02c-9f62-4922-89eb-dd2872c2b7e3)
-
-响应变色：用户点击笔记时，笔记的背景颜色会发生变化，增强交互感。
-![image](https://github.com/user-attachments/assets/37036ab0-ec59-4881-ae01-1970acf7af64)
-
-背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
-![image](https://github.com/user-attachments/assets/2c6b8c9b-ef7d-4f4f-ba4a-500590fdc709)
-
-笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
-![image](https://github.com/user-attachments/assets/b2c85a2d-804b-4eb6-bedb-7e80d4a8822d)
-  按颜色排序后
-![image](https://github.com/user-attachments/assets/2fdd448d-9c97-48f5-8f25-bc5626e21450)
+搜索功能
+用户可以通过输入关键字进行笔记搜索。
 
 
-# 未来的计划
-完成输出功能：支持将笔记导出为 .txt 或 .pdf 格式文件。
-增加笔记分类：允许用户将笔记分类，便于管理。
-UI 优化：提供更多主题选项，让用户可以自定义应用外观。
-云同步功能：支持跨设备同步笔记，提升数据的可访问性。
+截图提示：展示搜索功能界面，显示输入框和搜索结果。
+
+笔记详情
+点击任意笔记，进入编辑页面，支持修改内容、切换背景颜色等功能。
+
+
+截图提示：展示笔记的详细页面，突出显示修改背景颜色和响应变色的效果。
+
+输出功能
+展示笔记输出为文件的界面（如果功能已经实现）。
+
+
+截图提示：展示导出笔记为文件的界面或按钮，提醒功能未完全实现时也可以标注。
+
+未来的计划
+完善 输出功能，支持将笔记导出为不同格式（如 .txt 或 .pdf）。
+增加笔记分类管理功能，方便用户管理大量笔记。
+提升 UI 设计，提供更多自定义选项，如主题切换。
+支持云同步功能，便于在多个设备间同步笔记数据。
+贡献
+如果你有兴趣为该项目贡献代码或提交问题反馈，请参阅 CONTRIBUTING.md。
+
+许可证
+本项目采用 MIT 许可证。
 
