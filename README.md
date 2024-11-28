@@ -33,11 +33,19 @@ https://github.com/llfjfz/NotePad
 
 同步 Gradle
 点击 Sync Now 以同步 Gradle 配置。
+
 其中
+
 JDK版本为17
+
 Gradle的版本为8.9.0
+
 AGP的版本为8.7.2
+
+API版本为35.0
+
 ![image](https://github.com/user-attachments/assets/b51b4b26-0a9e-40b0-90e3-228840bf382c)
+![image](https://github.com/user-attachments/assets/de4a1225-3727-47ee-a8e6-326788ffb20b)
 
 
 # 运行应用
@@ -47,37 +55,61 @@ AGP的版本为8.7.2
 
 主要的类:
 NotesList类 应用程序的入口，笔记本的首页面会显示笔记的列表
+
 NoteEditor类 编辑笔记内容的Activity
+
 TitleEditor类 编辑笔记标题的Activity
+
 NotePadProvider类 这是笔记本应用的ContentProvider
+
 NoteColor类 用来选择颜色
+
 NoteSearch类 用于实现笔记查询
+
 MyCursorAdapter类 继承SimpleCursorAdapter
 
 主要的布局文件：
+
 note_editor.xml 笔记主页面布局
+
 noteslist_item.xml 笔记主页面每个列表项布局
+
 title_editor.xml 修改笔记主题布局
+
 note_search.xml 笔记内容查询布局
+
 note_color.xml 对选择颜色界面进行布局
 
 主要的菜单文件：
+
 editor_options_menu.xml 编辑笔记内容的菜单布局
+
 list_context_menu.xml 笔记内容编辑上下文菜单布局
+
 list_options_menu.xml 笔记主页面可选菜单布局
 
-![image](https://github.com/user-attachments/assets/03854139-f657-400f-8057-a32ba90b6074)
+![image](https://github.com/user-attachments/assets/08951e1d-d7bc-49ec-b3c5-ca74afcbe7f1)
+
+![image](https://github.com/user-attachments/assets/2cdc02cb-d43e-42d3-b323-b57128660e7c)
+
+
 ![image](https://github.com/user-attachments/assets/b3e7c813-b4b7-4f4a-a735-0d80fbf9d58a)
 
-# 扩展功能说明
+# 基础功能
 时间戳：每条笔记自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间。
+
 搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
+
+# 扩展功能
 UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友好。
+
 响应变色：用户点击笔记时，笔记的背景颜色会发生变化，增强交互感。
+
 输出功能：用户可以将笔记内容导出为系统文件，功能尚在开发中，当前支持文本格式输出。
+
 背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
+
 笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
-页面截图
 # 主界面
 显示所有笔记，点击任意笔记可以查看和编辑。
 
