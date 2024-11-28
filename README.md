@@ -103,6 +103,8 @@ UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友
 
 笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
 ![image](https://github.com/user-attachments/assets/b2c85a2d-804b-4eb6-bedb-7e80d4a8822d)
+  按颜色排序后
+![image](https://github.com/user-attachments/assets/2fdd448d-9c97-48f5-8f25-bc5626e21450)
 
 
 # 未来的计划
