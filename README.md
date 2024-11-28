@@ -1,7 +1,5 @@
 # Android-Studio-mid-Note
 Android Studio 期中NotePad作业
-Android-Studio-mid-Note
-Android Studio 期中NotePad作业
 
 # 项目简介
 这是一个基于 Android Studio 开发的 NotePad 应用，作为期中作业，项目在原有基础上进行了功能扩展，旨在提供更丰富的笔记管理体验。支持时间戳、搜索、UI 美化、响应变色、笔记排序、背景颜色修改以及文件输出等功能。
@@ -16,18 +14,21 @@ UI 美化：应用的基础颜色为 HoloLight，界面设计简洁且美观。
 笔记排序：可以根据创建时间、修改时间或颜色对笔记进行排序。
 # 技术栈
 开发语言：Java 17
+
 IDE：Android Studio
+
 构建工具：Gradle
+
 JDK：Amazon Corretto 17
+
 数据库：SQLite（存储笔记数据）
+
 依赖库：RecyclerView、Room Database、Glide（图片处理）、File API（导出功能）
+
 安装和配置
 克隆项目
 在本地克隆项目仓库：
 
-bash
-复制代码
-git clone https://github.com/yourusername/android-studio-mid-note.git
 打开 Android Studio
 在 Android Studio 中打开项目目录。
 
