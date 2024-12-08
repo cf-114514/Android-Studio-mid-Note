@@ -477,6 +477,11 @@ adapter = new MyCursorAdapter(
 
 
 
+
+
+### 背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
+![image](https://github.com/user-attachments/assets/2c6b8c9b-ef7d-4f4f-ba4a-500590fdc709)
+
 ### 响应变色：用户点击笔记时，笔记的背景颜色会发生变化，增强交互感。
 ![image](https://github.com/user-attachments/assets/37036ab0-ec59-4881-ae01-1970acf7af64)
 
@@ -663,20 +668,96 @@ public class NoteColor extends Activity {
 
 
 
-
-### 背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
-![image](https://github.com/user-attachments/assets/2c6b8c9b-ef7d-4f4f-ba4a-500590fdc709)
-
-
-
-
-
 ### 笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
 ![image](https://github.com/user-attachments/assets/b2c85a2d-804b-4eb6-bedb-7e80d4a8822d)
   按颜色排序后
 ![image](https://github.com/user-attachments/assets/2fdd448d-9c97-48f5-8f25-bc5626e21450)
 
-
+笔记排序
+笔记排序，只要把Cursor的排序参数变换下就可以了。在菜单文件list_options_menu.xml中添加：
+```
+<item
+    android:id="@+id/menu_sort"
+    android:title="@string/menu_sort"
+    android:icon="@android:drawable/ic_menu_sort_by_size"
+    android:showAsAction="always" >
+    <menu>
+        <item
+            android:id="@+id/menu_sort1"
+            android:title="@string/menu_sort1"/>
+        <item
+            android:id="@+id/menu_sort2"
+            android:title="@string/menu_sort2"/>
+        <item
+            android:id="@+id/menu_sort3"
+            android:title="@string/menu_sort3"/>
+        </menu>
+    </item>
+```
+在NoteList菜单switch下添加case：
+```
+//创建时间排序
+    case R.id.menu_sort1:
+        cursor = managedQuery(
+                getIntent().getData(),            
+                PROJECTION,                      
+                null,                          
+                null,                          
+                NotePad.Notes._ID 
+                );
+        adapter = new MyCursorAdapter(
+                this,
+                R.layout.noteslist_item,
+                cursor,
+                dataColumns,
+                viewIDs
+        );
+        setListAdapter(adapter);
+        return true;
+ //修改时间排序
+    case R.id.menu_sort2:
+        cursor = managedQuery(
+                getIntent().getData(),          
+                PROJECTION,                      
+                null,                            
+                null,                       
+                NotePad.Notes.DEFAULT_SORT_ORDER 
+        );
+        adapter = new MyCursorAdapter(
+                this,
+                R.layout.noteslist_item,
+                cursor,
+                dataColumns,
+                viewIDs
+        );
+        setListAdapter(adapter);
+        return true;
+    //颜色排序
+    case R.id.menu_sort3:
+        cursor = managedQuery(
+                getIntent().getData(),
+                PROJECTION,      
+                null,       
+                null,       
+                NotePad.Notes.COLUMN_NAME_BACK_COLOR
+                );
+        adapter = new MyCursorAdapter(
+                this,
+                R.layout.noteslist_item,
+                cursor,
+                dataColumns,
+                viewIDs
+                );
+        setListAdapter(adapter);
+        return true;
+```
+因为排序会多次使用到cursor，adapter，所以将adapter,cursor,dataColumns,viewIDs定义在函数外类内：
+```
+private MyCursorAdapter adapter;
+private Cursor cursor;
+private String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,  NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE } ;
+private int[] viewIDs = { android.R.id.text1 , R.id.text1_time };
+```
 
 
 
