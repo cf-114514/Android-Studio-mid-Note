@@ -87,7 +87,7 @@ list_options_menu.xml 笔记主页面可选菜单布局
 # 代码说明
 
 ## 基础功能
-时间戳：每条笔记自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间。
+### 时间戳：每条笔记自动记录创建时间和最后修改时间。用户可以在笔记详情页面查看这些时间。
 ![image](https://github.com/user-attachments/assets/ca6c46f4-014b-4aa1-80ad-ebdd2e225537)
 
 在NotePad原应用中，笔记列表只显示了笔记的标题。要对它做时间扩展，可以把时间放在标题的下方。
@@ -220,7 +220,7 @@ SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 String dateTime = format.format(date);
 ``` 
 
-搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
+### 搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
 ![image](https://github.com/user-attachments/assets/a7b81761-413b-49b1-b189-68a017ad6cd6)
 
 笔记查询
@@ -363,7 +363,7 @@ String[] selectionArgs = { "%"+newText+"%" };
 ```
 
 ## 扩展功能
-UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友好。
+### UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友好。
 ![image](https://github.com/user-attachments/assets/c324a02c-9f62-4922-89eb-dd2872c2b7e3)
 
 UI美化
@@ -477,21 +477,201 @@ adapter = new MyCursorAdapter(
 
 
 
-响应变色：用户点击笔记时，笔记的背景颜色会发生变化，增强交互感。
+### 响应变色：用户点击笔记时，笔记的背景颜色会发生变化，增强交互感。
 ![image](https://github.com/user-attachments/assets/37036ab0-ec59-4881-ae01-1970acf7af64)
 
+背景更换指的是编辑笔记时的背景色更换。编辑笔记的Activity为NoteEditor。同样的，在PROJECTION中添加颜色项：
+```
+  private static final String[] PROJECTION =
+        new String[] {
+            NotePad.Notes._ID,
+            NotePad.Notes.COLUMN_NAME_TITLE,
+            NotePad.Notes.COLUMN_NAME_NOTE,
+            NotePad.Notes.COLUMN_NAME_BACK_COLOR
+    };
+```
+可以注意到，在NoteEditor类中有onResume()方法，onResume()方法在正常启动时会被调用，一般是onStart()后会执行onResume()，在Acitivity从Pause状态转化到Active状态也会被调用，利用这个特点，将从数据库读取颜色并设置编辑界面背景色操作放入其中，好处除了从笔记列表点进来时可以被执行到，跳到改变颜色Activity（接下来会提到）回来时也会被执行到。
+```
+//读取颜色数据
+int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR));
+    /**
+    * 白 255 255 255
+    * 黄 247 216 133
+    * 蓝 165 202 237
+    * 绿 161 214 174
+    * 红 244 149 133
+    */
+    switch (x){
+        case NotePad.Notes.DEFAULT_COLOR:
+            mText.setBackgroundColor(Color.rgb(255, 255, 255));
+            break;
+        case NotePad.Notes.YELLOW_COLOR:
+            mText.setBackgroundColor(Color.rgb(247, 216, 133));
+            break;
+        case NotePad.Notes.BLUE_COLOR:
+            mText.setBackgroundColor(Color.rgb(165, 202, 237));
+            break;
+        case NotePad.Notes.GREEN_COLOR:
+            mText.setBackgroundColor(Color.rgb(161, 214, 174));
+            break;
+        case NotePad.Notes.RED_COLOR:
+            mText.setBackgroundColor(Color.rgb(244, 149, 133));
+            break;
+        default:
+            mText.setBackgroundColor(Color.rgb(255, 255, 255));
+            break;
+    }
+```
+
+先在菜单文件中添加一个更改背景的选项，editor_options_menu.xml，图标自己添加，item总是显示：
+```
+<item android:id="@+id/menu_color"
+        android:title="@string/menu_color"
+        android:icon="@drawable/ic_menu_color"
+        android:showAsAction="always"/>
+```
+在NoteEditor中找到onOptionsItemSelected()方法，在菜单的switch中添加：
+```
+//换背景颜色选项
+    case R.id.menu_color:
+        changeColor();
+        break;
+```
+在NoteEditor中添加函数changeColor()：
+```
+//跳转改变颜色的activity，将uri信息传到新的activity
+    private final void changeColor() {
+        Intent intent = new Intent(null,mUri);
+        intent.setClass(NoteEditor.this,NoteColor.class);
+        NoteEditor.this.startActivity(intent);
+    }
+```
+在此之前，要对选择颜色界面进行布局，新建布局note_color.xml，垂直线性布局放置5个ImageButton，并创建NoteColor的Acitvity，用来选择颜色。在AndroidManifest.xml中将这个Acitvity主题定义为对话框样式：
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageButton
+        android:id="@+id/color_white"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:onClick="white"/>
+    <ImageButton
+        android:id="@+id/color_yellow"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorYellow"
+        android:onClick="yellow"/>
+    <ImageButton
+        android:id="@+id/color_blue"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorBlue"
+        android:onClick="blue"/>
+    <ImageButton
+        android:id="@+id/color_green"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorGreen"
+        android:onClick="green"/>
+    <ImageButton
+        android:id="@+id/color_red"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorRed"
+        android:onClick="red"/>
+</LinearLayout>
+```
+```
+public class NoteColor extends Activity {
+    private Cursor mCursor;
+    private Uri mUri;
+    private int color;
+    private static final int COLUMN_INDEX_TITLE = 1;
+    private static final String[] PROJECTION = new String[] {
+            NotePad.Notes._ID, // 0
+            NotePad.Notes.COLUMN_NAME_BACK_COLOR,
+    };
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.note_color);
+        //从NoteEditor传入的uri
+        mUri = getIntent().getData();
+        mCursor = managedQuery(
+                mUri,        // The URI for the note that is to be retrieved.
+                PROJECTION,  // The columns to retrieve
+                null,        // No selection criteria are used, so no where columns are needed.
+                null,        // No where columns are used, so no where values are needed.
+                null         // No sort order is needed.
+        );
+    }
+    @Override
+    protected void onResume(){
+    //执行顺序在onCreate之后
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+            color = mCursor.getInt(COLUMN_INDEX_TITLE);
+        }
+        super.onResume();
+    }
+    @Override
+    protected void onPause() {
+    //执行顺序在finish()之后，将选择的颜色存入数据库
+        super.onPause();
+        ContentValues values = new ContentValues();
+        values.put(NotePad.Notes.COLUMN_NAME_BACK_COLOR, color);
+        getContentResolver().update(mUri, values, null, null);
+    }
+    public void white(View view){
+        color = NotePad.Notes.DEFAULT_COLOR;
+        finish();
+    }
+    public void yellow(View view){
+        color = NotePad.Notes.YELLOW_COLOR;
+        finish();
+    }
+    public void blue(View view){
+        color = NotePad.Notes.BLUE_COLOR;
+        finish();
+    }
+    public void green(View view){
+        color = NotePad.Notes.GREEN_COLOR;
+        finish();
+    }
+    public void red(View view){
+        color = NotePad.Notes.RED_COLOR;
+        finish();
+    }
+
+}
+```
+```
+<!--换背景色-->
+<activity android:name="NoteColor"
+    android:theme="@android:style/Theme.Holo.Light.Dialog"
+    android:label="ChangeColor"
+    android:windowSoftInputMode="stateVisible"/>
+```
+因为选择颜色就会响应对应的函数，而函数先将选择的颜色信息保存在color变量中，调用finish()后会执行onPause()，在onPause()中将颜色存入数据库，Activity从NoteColor回到NoteEditor，NoteEditor被唤醒，会调用NoteEditor的onResume()，onResume()中有读取数据库颜色信息将设置背景的操作，就达到了换背景色的作用，并且也达到了NoteList中笔记颜色更改与编辑背景一致的效果。
 
 
 
 
-背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
+### 背景颜色选择：用户可以为每条笔记选择一个自定义背景颜色，以便于管理和区分不同笔记。
 ![image](https://github.com/user-attachments/assets/2c6b8c9b-ef7d-4f4f-ba4a-500590fdc709)
 
 
 
 
 
-笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
+### 笔记排序：用户可以根据笔记的创建时间、最后修改时间或者背景颜色来排序笔记，方便整理。
 ![image](https://github.com/user-attachments/assets/b2c85a2d-804b-4eb6-bedb-7e80d4a8822d)
   按颜色排序后
 ![image](https://github.com/user-attachments/assets/2fdd448d-9c97-48f5-8f25-bc5626e21450)
