@@ -366,7 +366,114 @@ String[] selectionArgs = { "%"+newText+"%" };
 UI 美化：基础颜色为 HoloLight，整体 UI 简洁明了，用户体验友好。
 ![image](https://github.com/user-attachments/assets/c324a02c-9f62-4922-89eb-dd2872c2b7e3)
 
-
+UI美化
+先给NoteList换个主题，把黑色换成白色，在AndroidManifest.xml中NotesList的Activity中添加：
+```
+android:theme="@android:style/Theme.Holo.Light"
+```
+UI美化主要是让NoteList和NoteSearch每条笔记都有背景色，并且能保存。要做到保存颜色的数据，最直接的办法就是在数据库中添加一个颜色的字段，在这之前在NotePad契约类中添加：
+```
+public static final String COLUMN_NAME_BACK_COLOR = "color";
+```
+创建数据库表地方添加颜色的字段：
+```
+ @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + NotePad.Notes.TABLE_NAME + "   ("
+        + NotePad.Notes._ID + " INTEGER PRIMARY KEY,"
+        + NotePad.Notes.COLUMN_NAME_TITLE + " TEXT,"
+        + NotePad.Notes.COLUMN_NAME_NOTE + " TEXT,"
+        + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " INTEGER,"
+        + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER,"
+        + NotePad.Notes.COLUMN_NAME_BACK_COLOR + " INTEGER" //颜色
+        + ");");
+       }
+```
+把颜色定义为INTEGER的主要原因是，在系统中预定于好五种颜色，根据颜色对应不int值选择要显示的颜色，契约类中的定义：
+```
+public static final int DEFAULT_COLOR = 0; //白
+public static final int YELLOW_COLOR = 1; //黄
+public static final int BLUE_COLOR = 2; //蓝
+public static final int GREEN_COLOR = 3; //绿
+public static final int RED_COLOR = 4; //红
+```
+由于数据库中多了一个字段，所以要在NotePadProvider中添加对其相应的处理，static{}中：
+```
+sNotesProjectionMap.put(
+        NotePad.Notes.COLUMN_NAME_BACK_COLOR,
+        NotePad.Notes.COLUMN_NAME_BACK_COLOR);
+```
+insert中：
+```
+ // 新建笔记，背景默认为白色
+if (values.containsKey(NotePad.Notes.COLUMN_NAME_BACK_COLOR) == false) {
+        values.put(NotePad.Notes.COLUMN_NAME_BACK_COLOR, NotePad.Notes.DEFAULT_COLOR);
+        }
+```
+将颜色填充到ListView，可以用SimpleCursorAdapter中的getView，bindView，newView方法来实现，我选择了bindView。自定义一个CursorAdapter继承SimpleCursorAdapter，既能完成cursor读取的数据库内容填充到item，又能将颜色填充：
+```
+public class MyCursorAdapter extends SimpleCursorAdapter {
+    public MyCursorAdapter(Context context, int layout, Cursor c,
+                           String[] from, int[] to) {
+        super(context, layout, c, from, to);
+    }
+    @Override
+    public void bindView(View view, Context context, Cursor cursor){
+        super.bindView(view, context, cursor);
+        //从数据库中读取的cursor中获取笔记列表对应的颜色数据，并设置笔记颜色
+        int x = cursor.getInt(cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR));
+        /**
+         * 白 255 255 255
+         * 黄 247 216 133
+         * 蓝 165 202 237
+         * 绿 161 214 174
+         * 红 244 149 133
+         */
+        switch (x){
+            case NotePad.Notes.DEFAULT_COLOR:
+                view.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+            case NotePad.Notes.YELLOW_COLOR:
+                view.setBackgroundColor(Color.rgb(247, 216, 133));
+                break;
+            case NotePad.Notes.BLUE_COLOR:
+                view.setBackgroundColor(Color.rgb(165, 202, 237));
+                break;
+            case NotePad.Notes.GREEN_COLOR:
+                view.setBackgroundColor(Color.rgb(161, 214, 174));
+                break;
+            case NotePad.Notes.RED_COLOR:
+                view.setBackgroundColor(Color.rgb(244, 149, 133));
+                break;
+            default:
+                view.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+        }
+    }
+}
+```
+NoteList中的PROJECTION添加颜色项：
+```
+private static final String[] PROJECTION = new String[] {
+            NotePad.Notes._ID, // 0
+            NotePad.Notes.COLUMN_NAME_TITLE, // 1
+            //扩展 显示时间 颜色
+            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, // 2
+            NotePad.Notes.COLUMN_NAME_BACK_COLOR,
+    };
+```
+并且将NoteList中用的SimpleCursorAdapter改使用MyCursorAdapter：
+```
+ //修改为可以填充颜色的自定义的adapter，自定义的代码在MyCursorAdapter.java中
+adapter = new MyCursorAdapter(
+        this,
+        R.layout.noteslist_item,
+        cursor,
+        dataColumns,
+        viewIDs
+    );
+```
+由于目前为止并没有设置颜色的选项，所以创建的笔记都是白色背景的，但是结合下一个功能，背景更换，让编辑笔记时的背景色跟笔记列表的该笔记背景色同为一种颜色。
 
 
 
