@@ -263,74 +263,76 @@ String dateTime = format.format(date);
     </ListView>
 </LinearLayout>
 
+
 在上面的ListView的id命名方式与往常“@+id/”的方式有些不同，之前用“@+id/”方式尝试过，但是运行会出错，可能是由于是继承ListAcitivity的缘故。
 要动态地显示搜索结果，就要对SearchView文本变化设置监听，NoteSearch除了要继承ListView外还要实现SearchView.OnQueryTextListener接口：
 
-public class NoteSearch extends ListActivity  implements SearchView.OnQueryTextListener {
-    private static final String[] PROJECTION = new String[] {
-            NotePad.Notes._ID, // 0
-            NotePad.Notes.COLUMN_NAME_TITLE, // 1
-            //扩展 显示时间 颜色
-            NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, // 2
-            NotePad.Notes.COLUMN_NAME_BACK_COLOR
-    };
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.note_search_list);
-        Intent intent = getIntent();
-        if (intent.getData() == null) {
-            intent.setData(NotePad.Notes.CONTENT_URI);
-        }
-        SearchView searchview = (SearchView)findViewById(R.id.search_view);
-        //为查询文本框注册监听器
-        searchview.setOnQueryTextListener(NoteSearch.this);  
-    }
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return false;
-    }
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        String selection = NotePad.Notes.COLUMN_NAME_TITLE + " Like ? ";
-        String[] selectionArgs = { "%"+newText+"%" };
-        Cursor cursor = managedQuery(
-                getIntent().getData(),            // Use the default content URI for the provider.
-                PROJECTION,                       // Return the note ID and title for each note. and modifcation date
-                selection,                        // 条件左边
-                selectionArgs,                    // 条件右边
-                NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.
-        );
-        String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,  NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE };
-        int[] viewIDs = { android.R.id.text1 , R.id.text1_time };
-        MyCursorAdapter adapter = new MyCursorAdapter(
-                this,
-                R.layout.noteslist_item,
-                cursor,
-                dataColumns,
-                viewIDs
-        );
-        setListAdapter(adapter);
-        return true;
-    }
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        // Constructs a new URI from the incoming URI and the row ID
-        Uri uri = ContentUris.withAppendedId(getIntent().getData(), id);
-        // Gets the action from the incoming Intent
-        String action = getIntent().getAction();
-        // Handles requests for note data
-        if (Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action)) {
-            // Sets the result to return to the component that called this Activity. The
-            // result contains the new URI
-            setResult(RESULT_OK, new Intent().setData(uri));
-        } else {
-            // Sends out an Intent to start an Activity that can handle ACTION_EDIT. The
-            // Intent's data is the note ID URI. The effect is to call NoteEdit.
-            startActivity(new Intent(Intent.ACTION_EDIT, uri));
-        }
-    }
-}
+  
+  public class NoteSearch extends ListActivity  implements SearchView.OnQueryTextListener {
+      private static final String[] PROJECTION = new String[] {
+              NotePad.Notes._ID, // 0
+              NotePad.Notes.COLUMN_NAME_TITLE, // 1
+              //扩展 显示时间 颜色
+              NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, // 2
+              NotePad.Notes.COLUMN_NAME_BACK_COLOR
+      };
+      @Override
+      protected void onCreate(Bundle savedInstanceState) {
+          super.onCreate(savedInstanceState);
+          setContentView(R.layout.note_search_list);
+          Intent intent = getIntent();
+          if (intent.getData() == null) {
+              intent.setData(NotePad.Notes.CONTENT_URI);
+          }
+          SearchView searchview = (SearchView)findViewById(R.id.search_view);
+          //为查询文本框注册监听器
+          searchview.setOnQueryTextListener(NoteSearch.this);  
+      }
+      @Override
+      public boolean onQueryTextSubmit(String query) {
+          return false;
+      }
+      @Override
+      public boolean onQueryTextChange(String newText) {
+          String selection = NotePad.Notes.COLUMN_NAME_TITLE + " Like ? ";
+          String[] selectionArgs = { "%"+newText+"%" };
+          Cursor cursor = managedQuery(
+                  getIntent().getData(),            // Use the default content URI for the provider.
+                  PROJECTION, // Return the note ID 和 title for each note. 和 modifcation date
+                  selection,                        // 条件左边
+                  selectionArgs,                    // 条件右边
+                  NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.
+          );
+          String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,  NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE };
+          int[] viewIDs = { android.R.id.text1 , R.id.text1_time };
+          MyCursorAdapter adapter = new MyCursorAdapter(
+                  this,
+                  R.layout.noteslist_item,
+                  cursor,
+                  dataColumns,
+                  viewIDs
+          );
+          setListAdapter(adapter);
+          return true;
+      }
+      @Override
+      protected void onListItemClick(ListView l, View v, int position, long id) {
+          // Constructs a new URI from the incoming URI 和 the row ID
+          Uri uri = ContentUris.withAppendedId(getIntent().getData(), id);
+          // Gets the action from the incoming Intent
+          String action = getIntent().getAction();
+          // Handles requests for note data
+          if (Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action)) {
+              // Sets the result to return to the component that called this Activity. The
+              // result contains the new URI
+              setResult(RESULT_OK, new Intent().setData(uri));
+          } else {
+              // Sends out an Intent to start an Activity that can handle ACTION_EDIT. The
+              // Intent's data is the note ID URI. The effect is to call NoteEdit.
+              startActivity(new Intent(Intent.ACTION_EDIT, uri));
+          }
+      }
+  }
 
 
 即使我不需要使用onQueryTextSubmit方法，onQueryTextSubmit和onQueryTextChange两个方法也是实现接口必须写的方法。onListItemClick方法是点击NoteList的item跳转到对应笔记编辑界面的方法，NoteList中有这个方法，搜索出来的笔记跳转原理与NoteList中笔记一样，所以可以直接从NoteList中复制过来直接使用。
@@ -462,7 +464,9 @@ adapter = new MyCursorAdapter(
 
 # 背景更换
 
+
 背景更换指的是编辑笔记时的背景色更换。编辑笔记的Activity为NoteEditor。同样的，在PROJECTION中添加颜色项：
+
 
   private static final String[] PROJECTION =
         new String[] {
@@ -472,7 +476,9 @@ adapter = new MyCursorAdapter(
             NotePad.Notes.COLUMN_NAME_BACK_COLOR
     };
 
+
 可以注意到，在NoteEditor类中有onResume()方法，onResume()方法在正常启动时会被调用，一般是onStart()后会执行onResume()，在Acitivity从Pause状态转化到Active状态也会被调用，利用这个特点，将从数据库读取颜色并设置编辑界面背景色操作放入其中，好处除了从笔记列表点进来时可以被执行到，跳到改变颜色Activity（接下来会提到）回来时也会被执行到。
+
 
 //读取颜色数据
 int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR));
@@ -505,12 +511,14 @@ int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COL
    }
 先在菜单文件中添加一个更改背景的选项，editor_options_menu.xml，图标自己添加，item总是显示：
 
+
 <item android:id="@+id/menu_color"
         android:title="@string/menu_color"
         android:icon="@drawable/ic_menu_color"
         android:showAsAction="always"/>
 
 在NoteEditor中找到onOptionsItemSelected()方法，在菜单的switch中添加：
+
 
 //换背景颜色选项
     case R.id.menu_color:
@@ -519,6 +527,7 @@ int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COL
 
 在NoteEditor中添加函数changeColor()：
 
+
 //跳转改变颜色的activity，将uri信息传到新的activity
     private final void changeColor() {
         Intent intent = new Intent(null,mUri);
@@ -526,7 +535,9 @@ int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COL
         NoteEditor.this.startActivity(intent);
     }
 
+
 在此之前，要对选择颜色界面进行布局，新建布局note_color.xml，垂直线性布局放置5个ImageButton，并创建NoteColor的Acitvity，用来选择颜色。在AndroidManifest.xml中将这个Acitvity主题定义为对话框样式：
+
 
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -568,6 +579,7 @@ int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COL
         android:background="@color/colorRed"
         android:onClick="red"/>
 </LinearLayout>
+
 
 public class NoteColor extends Activity {
     private Cursor mCursor;
@@ -635,6 +647,7 @@ public class NoteColor extends Activity {
     android:theme="@android:style/Theme.Holo.Light.Dialog"
     android:label="ChangeColor"
     android:windowSoftInputMode="stateVisible"/>
+
 
 因为选择颜色就会响应对应的函数，而函数先将选择的颜色信息保存在color变量中，调用finish()后会执行onPause()，在onPause()中将颜色存入数据库，Activity从NoteColor回到NoteEditor，NoteEditor被唤醒，会调用NoteEditor的onResume()，onResume()中有读取数据库颜色信息将设置背景的操作，就达到了换背景色的作用，并且也达到了NoteList中笔记颜色更改与编辑背景一致的效果。
 
