@@ -263,11 +263,11 @@ String dateTime = format.format(date);
     </ListView>
 </LinearLayout>
 
-
+<!---->
 在上面的ListView的id命名方式与往常“@+id/”的方式有些不同，之前用“@+id/”方式尝试过，但是运行会出错，可能是由于是继承ListAcitivity的缘故。
 要动态地显示搜索结果，就要对SearchView文本变化设置监听，NoteSearch除了要继承ListView外还要实现SearchView.OnQueryTextListener接口：
 
-  
+  <!--设置监听-->
   public class NoteSearch extends ListActivity  implements SearchView.OnQueryTextListener {
       private static final String[] PROJECTION = new String[] {
               NotePad.Notes._ID, // 0
