@@ -95,6 +95,7 @@ NoteList中显示条目增加时间显示
 首先，找到列表中item的布局：noteslist_item.xml。
 在这个布局文件中，能看到一个TextView，这个便是笔记列表的标题item了。
 
+```
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
@@ -104,18 +105,12 @@ NoteList中显示条目增加时间显示
     android:paddingLeft="5dip"
     android:singleLine="true"
 />
-1
-2
-3
-4
-5
-6
-7
-8
-9
+```
+
 要在标题下方加时间显示，就要在标题的TextView下再加一个时间的TextView。但是由于原应用列表item只需要一个标题，所以不需要用上别的布局，而我要多加一个时间TextView，就要把标题TextView和时间TextView放入垂直的线性布局。
 由于要美化UI，所以将TextView原字体颜色改为黑色。新加的时间TextView字体大小小于标题TextView。
 
+```
 <?xml version="1.0" encoding="utf-8"?>
 <!--添加一个垂直的线性布局-->
 <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
@@ -143,35 +138,11 @@ NoteList中显示条目增加时间显示
         android:paddingLeft="5dip"
         android:textColor="@color/colorBlack"/>
 </LinearLayout>
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
+```
+
 先查看程序如何定义数据库结构的，NotePadProvider.java中:
 
+```
 @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + NotePad.Notes.TABLE_NAME + " ("
@@ -182,30 +153,22 @@ NoteList中显示条目增加时间显示
             + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " INTEGER"
             + ");");
     }
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
+```
+
 可以看出，NotePad数据库已经存在时间信息。
 再到NoteList.java文件中查看，是如何将数据装填到列表中。
 可以发现，当前Activity所用到的数据被定义在PROJECTION中：
 
+```
 private static final String[] PROJECTION = new String[] {
             NotePad.Notes._ID, // 0
             NotePad.Notes.COLUMN_NAME_TITLE, // 1
     };
-1
-2
-3
-4
+```
+
 通过Cursor从数据库中读取出：
 
+```
 Cursor cursor = managedQuery(
             getIntent().getData(),            // Use the default content URI for the provider.
             PROJECTION,                       // Return the note ID and title for each note.
@@ -213,6 +176,7 @@ Cursor cursor = managedQuery(
             null,                             // No where clause, therefore no where column values.
             NotePad.Notes.DEFAULT_SORT_ORDER  // Use the default sort order.
         );
+```
 
 通过SimpleCursorAdapter装填：
 ``` java
@@ -256,10 +220,6 @@ Date date = new Date(now);
 SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 String dateTime = format.format(date);
 ``` 
-
-
-
-
 
 搜索功能：用户可以通过输入关键词进行笔记搜索，快速定位到相关内容。
 ![image](https://github.com/user-attachments/assets/a7b81761-413b-49b1-b189-68a017ad6cd6)
